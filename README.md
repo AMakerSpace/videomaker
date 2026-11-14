@@ -1,3 +1,15 @@
+# VideoMaker
+
+**VideoMaker** ist ein Fork von [Kdenlive](https://kdenlive.org) mit einer einfachen, iMovie-artigen Oberfläche
+im AMaker-Stil (Schwarz/Weiß/Grau, Stack Sans Notch). Motor, Projektformat, Effekte und Rendering bleiben Kdenlive.
+Status: **Alpha**. Verteilt über den [AMakerLauncher](https://github.com/AMakerSpace/AMakerLauncher).
+
+- Was geändert ist: [`videomaker/README.md`](videomaker/README.md) (Zweig `videomaker`, Basis `release/25.12`)
+- Lizenz: wie Kdenlive GPL-3.0 (siehe `LICENSES/`). Alle Änderungen an Kdenlive-Dateien sind mit „VideoMaker“ kommentiert.
+- Ursprüngliches Kdenlive: https://invent.kde.org/multimedia/kdenlive
+
+---
+
 ![](data/pics/kdenlive-logo.png)
 
 # Kdenlive
