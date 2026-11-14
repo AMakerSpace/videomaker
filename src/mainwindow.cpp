@@ -2637,6 +2637,15 @@ void MainWindow::addTimelineClip(const QString &url)
     }
 }
 
+bool MainWindow::triggerAction(const QString &name)
+{
+    if (QAction *action = actionCollection()->action(name)) {
+        action->trigger();
+        return true;
+    }
+    return false;
+}
+
 void MainWindow::scriptRender(const QString &url)
 {
     Q_UNUSED(url)

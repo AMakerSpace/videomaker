@@ -92,6 +92,8 @@ QToolBar#videomakerTopBar { background: #000000; border: 0; border-bottom: 3px s
 QLabel#vmNumber { background: #ffffff; color: #000000; font-weight: 700; padding: 3px 7px; }
 QLabel#vmBoxTitle { font-weight: 700; padding: 0 4px; }
 #vmSeparator { background: #6b6b6b; }
+#vmAdjustPanel { background: #000000; border: 0; border-bottom: 3px solid #ffffff; }
+#vmAdjustPanel QPushButton { padding: 2px 10px; min-height: 16px; }
 QToolButton[vmButton="true"] { background: #9a9a9a; color: #000000; font-weight: 700; padding: 4px 10px;
   border: 3px solid qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); border-right: 7px solid #6b6b6b; border-bottom: 7px solid #6b6b6b; margin: 2px 0 0 2px; }
 QToolButton[vmButton="true"]:hover { border-top-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); border-left-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); margin: 0 2px 2px 0; }

@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QPointer>
 
+class AdjustPanel;
 class MainWindow;
 class QLabel;
 class QSlider;
@@ -53,7 +54,6 @@ private:
     QWidget *buildFilmBar();
     QToolButton *toolButton(const QString &icon, const QString &tip, QWidget *parent);
     QToolButton *actionButton(const QString &actionName, const QString &text, QWidget *parent);
-    void addEffectToSelection(const QString &effectId);
     void triggerAction(const QString &name);
     void showDock(int which);
     void setTheme(const QString &mode);
@@ -64,6 +64,7 @@ private:
     QPointer<MainWindow> m_window;
     QToolBar *m_topBar{nullptr};
     QWidget *m_adjustBar{nullptr};
+    AdjustPanel *m_adjustPanel{nullptr};
     QWidget *m_filmBar{nullptr};
     QLabel *m_projectName{nullptr};
     QToolButton *m_advancedButton{nullptr};

@@ -376,6 +376,8 @@ public Q_SLOTS:
     Q_SCRIPTABLE void addProjectClip(const QString &url, const QString &folder = QStringLiteral("-1"));
     Q_SCRIPTABLE void addTimelineClip(const QString &url);
     Q_SCRIPTABLE void addEffect(const QString &effectId);
+    /** @brief VideoMaker: trigger any action of the action collection by name (scripting and tests) */
+    Q_SCRIPTABLE bool triggerAction(const QString &name);
     Q_SCRIPTABLE void scriptRender(const QString &url);
 #ifndef NODBUS
     Q_NOREPLY void exitApp();

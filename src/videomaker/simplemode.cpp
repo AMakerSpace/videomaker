@@ -4,6 +4,7 @@
 */
 
 #include "simplemode.h"
+#include "adjustpanel.h"
 #include "amakertheme.h"
 
 #include "core.h"
@@ -127,9 +128,13 @@ void SimpleMode::attach(MainWindow *window)
     window->addToolBar(Qt::TopToolBarArea, m_topBar);
     window->insertToolBarBreak(m_topBar);
 
+    m_adjustPanel = new AdjustPanel(window);
+    connect(m_adjustPanel, &AdjustPanel::showFullSettings, this, [this]() { showDock(DockAdjust); });
     m_adjustBar = buildAdjustBar();
     if (auto *lay = qobject_cast<QVBoxLayout *>(window->m_projectMonitor->layout())) {
+        // Wie iMovie: Werkzeuge über der Vorschau, die Regler klappen direkt darunter auf
         lay->insertWidget(0, m_adjustBar);
+        lay->insertWidget(1, m_adjustPanel);
     }
     m_filmBar = buildFilmBar();
     if (auto *lay = qobject_cast<QVBoxLayout *>(window->m_timelineToolBarContainer->layout())) {
@@ -164,6 +169,9 @@ void SimpleMode::setSimple(bool simple)
     m_window->m_timelineToolBar->setVisible(!simple);
     m_topBar->setVisible(true);
     m_adjustBar->setVisible(simple);
+    if (!simple) {
+        m_adjustPanel->closePanel();
+    }
     m_filmBar->setVisible(simple);
     applyBinView(simple);
     m_advancedButton->setChecked(!simple);
@@ -304,9 +312,13 @@ QWidget *SimpleMode::buildAdjustBar()
             continue;
         }
         auto *b = toolButton(t.icon, t.tip, bar);
-        connect(b, &QToolButton::clicked, this, [this, t]() {
+        // Jedes Werkzeug ist auch eine Aktion (Tastenkürzel, DBus: …/actions/vm_tool_<name>)
+        auto *act = new QAction(vmIcon(t.icon), t.tip, m_window);
+        m_window->actionCollection()->addAction(QStringLiteral("vm_tool_") + t.icon, act);
+        connect(b, &QToolButton::clicked, act, &QAction::trigger);
+        connect(act, &QAction::triggered, this, [this, t]() {
             if (!t.effect.isEmpty()) {
-                addEffectToSelection(t.effect);
+                m_adjustPanel->toggle(t.effect, t.tip);
             } else if (t.action == QLatin1String("#effects")) {
                 showDock(DockEffects);
             } else if (t.action == QLatin1String("#adjust")) {
@@ -404,12 +416,6 @@ void SimpleMode::applyBinView(bool simple)
             zoom->setValue(zoom->maximum());
         }
     }
-}
-
-void SimpleMode::addEffectToSelection(const QString &effectId)
-{
-    m_window->addEffect(effectId);
-    showDock(DockAdjust);
 }
 
 void SimpleMode::triggerAction(const QString &name)

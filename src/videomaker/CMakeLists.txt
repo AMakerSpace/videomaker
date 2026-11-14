@@ -5,6 +5,7 @@ set(kdenlive_SRCS
   ${kdenlive_SRCS}
     videomaker/amakertheme.cpp
     videomaker/simplemode.cpp
+    videomaker/adjustpanel.cpp
   PARENT_SCOPE)
 
 # Farbschemata, Menüeintrag und Icon
