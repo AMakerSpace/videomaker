@@ -255,6 +255,10 @@ Rectangle {
             }
             return '#' + color.substring(color.length - 8, color.length - 2)
         }
+        if (vmMode.simple) {
+            // VideoMaker: Ton und Bild in Grautönen, Farbe kommt nur aus den Vorschaubildern
+            return isAudio ? activePalette.mid : activePalette.dark
+        }
         return isAudio? root.audioColor : root.videoColor
     }
 
@@ -422,16 +426,18 @@ Rectangle {
                 }
 
                 if (clipRoot.selected) {
-                    return root.selectionColor
+                    // VideoMaker: Auswahl in Logo-Orange
+                    return vmMode.simple ? "#ffd998" : root.selectionColor
                 }
 
                 if (grouped) {
                     return root.groupColor
                 }
 
-                return borderColor
+                return vmMode.simple ? root.textColor : borderColor
             }
-            border.width: isGrabbed ? 8 : 2
+            // VideoMaker: 3px-Rahmen wie im AMaker-Stil, ausgewählt 5px
+            border.width: isGrabbed ? 8 : (vmMode.simple ? (clipRoot.selected ? 5 : 3) : 2)
             Rectangle {
                 id: trimOut
                 anchors.right: itemBorder.right
@@ -497,9 +503,32 @@ Rectangle {
                     }
 
                     opacity: mixArea.containsMouse || trimInMixArea.pressed || trimInMixArea.containsMouse || mixSelected ? 1 : 0.7
-                    border.color: mixSelected ? root.selectionColor : "white"
-                    border.width: clipRoot.mixDuration > 0 ? 2 : 0
-                    radius: 3
+                    border.color: mixSelected ? root.selectionColor : (vmMode.simple ? root.textColor : "white")
+                    border.width: clipRoot.mixDuration > 0 ? (vmMode.simple ? 3 : 2) : 0
+                    radius: vmMode.simple ? 0 : 3
+                    // VideoMaker: Übergang als Symbol-Kästchen wie bei iMovie
+                    Rectangle {
+                        visible: vmMode.simple && clipRoot.mixDuration > 0
+                        anchors.centerIn: parent
+                        width: Math.min(28, parent.width - 4)
+                        height: width
+                        color: activePalette.base
+                        border.color: root.textColor
+                        border.width: 3
+                        Canvas {
+                            anchors.fill: parent
+                            anchors.margins: 6
+                            property color ink: root.textColor
+                            onInkChanged: requestPaint()
+                            onPaint: {
+                                var ctx = getContext("2d")
+                                ctx.reset()
+                                ctx.fillStyle = ink
+                                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(width / 2, height / 2); ctx.lineTo(0, height); ctx.closePath(); ctx.fill()
+                                ctx.beginPath(); ctx.moveTo(width, 0); ctx.lineTo(width / 2, height / 2); ctx.lineTo(width, height); ctx.closePath(); ctx.fill()
+                            }
+                        }
+                    }
                     Rectangle {
                         id: mixCutPos
                         anchors.right: parent.right
@@ -1233,7 +1262,8 @@ Rectangle {
                 Rectangle {
                     // Clip name background
                     id: labelRect
-                    color: clipRoot.selected ? (root.mainItemId == clipRoot.clipId ? '#FFCC0000' : '#FF800000') : '#66000000'
+                    // VideoMaker: Namensmarke schwarz wie im Zielbild
+                    color: vmMode.simple ? '#FF000000' : clipRoot.selected ? (root.mainItemId == clipRoot.clipId ? '#FFCC0000' : '#FF800000') : '#66000000'
                     width: label.width + (2 * itemBorder.border.width)
                     height: label.height
                     visible: clipRoot.width > root.baseUnit

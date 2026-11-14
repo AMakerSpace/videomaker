@@ -95,10 +95,11 @@ Row {
             property int aWaveInPoint: Math.round((clipRoot.inPoint + ((index + waveform.offset) * waveform.maxWidth / scaleFactor)) * Math.abs(clipRoot.speed))
             waveInPoint: aWaveInPoint
             waveOutPoint: aWaveInPoint + Math.round(width / scaleFactor * Math.abs(clipRoot.speed))
-            bgColorEven: clipRoot.selected ? root.audioColor : root.audioColor.darker(1.5) //K.KdenliveSettings.thumbColor1.darker(5)
-            bgColorOdd: clipRoot.selected ? root.audioColor : root.audioColor.darker(1.5)//K.KdenliveSettings.thumbColor2.darker(5)
-            fgColorEven: clipRoot.selected ? K.KdenliveSettings.thumbColor1 :  K.KdenliveSettings.thumbColor1.darker(1.5)
-            fgColorOdd: clipRoot.selected ? K.KdenliveSettings.thumbColor2 : K.KdenliveSettings.thumbColor2.darker(1.5)
+            // VideoMaker: Tonwelle in Grautönen
+            bgColorEven: vmMode.simple ? activePalette.midlight : clipRoot.selected ? root.audioColor : root.audioColor.darker(1.5) //K.KdenliveSettings.thumbColor1.darker(5)
+            bgColorOdd: vmMode.simple ? activePalette.midlight : clipRoot.selected ? root.audioColor : root.audioColor.darker(1.5)//K.KdenliveSettings.thumbColor2.darker(5)
+            fgColorEven: vmMode.simple ? activePalette.dark : clipRoot.selected ? K.KdenliveSettings.thumbColor1 :  K.KdenliveSettings.thumbColor1.darker(1.5)
+            fgColorOdd: vmMode.simple ? activePalette.dark : clipRoot.selected ? K.KdenliveSettings.thumbColor2 : K.KdenliveSettings.thumbColor2.darker(1.5)
             drawChannelNames: false //(index + waveform.offset) == 0
         }
     }

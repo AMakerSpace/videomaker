@@ -11,11 +11,16 @@
 #include "mainwindow.h"
 #include "monitor/monitor.h"
 #include "timeline2/view/timelinetabs.hpp"
+#include "bin/bin.h"
+#include "timeline2/model/timelineitemmodel.hpp"
+#include "timeline2/view/timelinecontroller.h"
+#include "timeline2/view/timelinewidget.h"
 
 #include <KActionCollection>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KToolBar>
+#include <KSelectAction>
 #include <KSharedConfig>
 #include <QApplication>
 #include <QButtonGroup>
@@ -53,6 +58,7 @@ const QHash<QString, QString> &iconPaths()
         {QStringLiteral("mark"), QStringLiteral("M12 2v20M5 4h10l-2 3 2 3H5")},
         {QStringLiteral("undo"), QStringLiteral("M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3")},
         {QStringLiteral("redo"), QStringLiteral("M15 14l5-5-5-5M20 9H9a5 5 0 0 0 0 10h3")},
+        {QStringLiteral("plus"), QStringLiteral("M12 4v16M4 12h16")},
     };
     return paths;
 }
@@ -106,6 +112,17 @@ bool SimpleMode::isSimple() const
 void SimpleMode::attach(MainWindow *window)
 {
     m_window = window;
+    // iMovie: E hängt die gewählten Medien ans Ende des Films
+    auto *append = new QAction(i18n("Add to Movie"), window);
+    append->setIcon(vmIcon(QStringLiteral("plus")));
+    window->actionCollection()->addAction(QStringLiteral("vm_append_to_film"), append);
+    window->actionCollection()->setDefaultShortcut(append, Qt::Key_E);
+    connect(append, &QAction::triggered, this, [this]() {
+        for (const QString &id : pCore->bin()->selectedClipsIds()) {
+            appendToFilm(id);
+        }
+    });
+
     m_topBar = buildTopBar();
     window->addToolBar(Qt::TopToolBarArea, m_topBar);
     window->insertToolBarBreak(m_topBar);
@@ -148,6 +165,7 @@ void SimpleMode::setSimple(bool simple)
     m_topBar->setVisible(true);
     m_adjustBar->setVisible(simple);
     m_filmBar->setVisible(simple);
+    applyBinView(simple);
     m_advancedButton->setChecked(!simple);
     Q_EMIT pCore->hideBars(simple || !KdenliveSettings::showtitlebars());
     if (changed) {
@@ -317,7 +335,8 @@ QWidget *SimpleMode::buildFilmBar()
     title->setObjectName(QStringLiteral("vmBoxTitle"));
     lay->addWidget(title);
     lay->addSpacing(10);
-    const QList<QPair<QString, QString>> tools = {{QStringLiteral("cut"), QStringLiteral("cut_timeline_clip")},
+    const QList<QPair<QString, QString>> tools = {{QStringLiteral("plus"), QStringLiteral("vm_append_to_film")},
+                                                  {QStringLiteral("cut"), QStringLiteral("cut_timeline_clip")},
                                                   {QStringLiteral("mark"), QStringLiteral("add_marker_guide_quickly")},
                                                   {QStringLiteral("undo"), QStringLiteral("edit_undo")},
                                                   {QStringLiteral("redo"), QStringLiteral("edit_redo")}};
@@ -344,6 +363,47 @@ QWidget *SimpleMode::buildFilmBar()
     });
     lay->addWidget(m_zoom);
     return bar;
+}
+
+void SimpleMode::appendToFilm(const QString &binId)
+{
+    TimelineWidget *timeline = m_window ? m_window->getCurrentTimeline() : nullptr;
+    if (!timeline || binId.isEmpty()) {
+        return;
+    }
+    TimelineController *ctl = timeline->controller();
+    const int track = ctl->getModel()->getLowestVideoTrackIndex();
+    const int pos = ctl->duration();
+    const int clipId = ctl->insertClip(track, pos, binId, true, true, true);
+    if (clipId > -1) {
+        // Abspielkopf ans neue Ende, ganzen Film einpassen (wie iMovie)
+        ctl->setPosition(pos);
+        m_window->slotFitZoom();
+    }
+}
+
+void SimpleMode::applyBinView(bool simple)
+{
+    // Einfach: große Kacheln wie iMovie, Erweitert: Kdenlives Baumansicht
+    auto *mode = qobject_cast<KSelectAction *>(m_window->actionCollection()->action(QStringLiteral("bin_view_mode")));
+    if (!mode) {
+        return;
+    }
+    // Werte aus Bin::BinViewType (privat): 0 = Baum, 1 = Kacheln
+    const int wanted = simple ? 1 : 0;
+    const auto actions = mode->actions();
+    for (QAction *a : actions) {
+        if (a->data().toInt() == wanted && mode->currentAction() != a) {
+            mode->setCurrentAction(a);
+            Q_EMIT mode->actionTriggered(a);
+        }
+    }
+    if (simple) {
+        // Größte Kacheln über den Zoom-Regler der Mediathek (er speichert den Wert auch im Projekt)
+        if (auto *zoom = pCore->bin()->findChild<QSlider *>()) {
+            zoom->setValue(zoom->maximum());
+        }
+    }
 }
 
 void SimpleMode::addEffectToSelection(const QString &effectId)

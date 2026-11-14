@@ -2627,7 +2627,10 @@ void MainWindow::addTimelineClip(const QString &url)
 {
     if (pCore->currentDoc()) {
         QStringList ids = pCore->projectItemModel()->getClipByUrl(QFileInfo(url));
-        if (!ids.isEmpty()) {
+        if (!ids.isEmpty() && SimpleMode::instance()->isSimple()) {
+            // VideoMaker: im Einfach-Modus wie iMovie ans Ende des Films anhängen
+            SimpleMode::instance()->appendToFilm(ids.constFirst());
+        } else if (!ids.isEmpty()) {
             pCore->selectBinClip(ids.constFirst());
             slotInsertClipInsert();
         }

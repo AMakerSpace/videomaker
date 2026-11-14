@@ -24,7 +24,8 @@ Row {
         id: thumbRepeater
         // switching the model allows one to have different view modes.
         // We set the model to the number of frames we want to show
-        model: switch (parentTrack.trackThumbsFormat) {
+        // VideoMaker: im Einfach-Modus immer Filmstreifen (wie iMovie)
+        model: switch (vmMode.simple ? 1 : parentTrack.trackThumbsFormat) {
                    case 0:
                        // in/out
                        if (parent.width > thumbRow.thumbWidth) {

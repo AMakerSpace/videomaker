@@ -37,6 +37,8 @@ public:
     /** @brief Build the bars and apply the stored mode; call once the main window UI is complete. */
     void attach(MainWindow *window);
     void setSimple(bool simple);
+    /** @brief Append a bin clip at the end of the main video track (iMovie "+" / key E). */
+    void appendToFilm(const QString &binId);
 
 Q_SIGNALS:
     void simpleChanged(bool simple);
@@ -57,6 +59,7 @@ private:
     void setTheme(const QString &mode);
     void refreshIcons();
     void updateProjectName();
+    void applyBinView(bool simple);
 
     QPointer<MainWindow> m_window;
     QToolBar *m_topBar{nullptr};
