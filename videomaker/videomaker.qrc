@@ -1,0 +1,17 @@
+<!-- SPDX-FileCopyrightText: 2026 AMakerSpace -->
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
+<!-- VideoMaker: AMaker-Thema, Schrift und Icon. Erzeugt/aktualisiert mit scripts/kit-sync.sh -->
+<RCC>
+    <qresource prefix="videomaker">
+        <file>theme/amaker-light.qss</file>
+        <file>theme/amaker-dark.qss</file>
+        <file>theme/dots-light.svg</file>
+        <file>theme/dots-dark.svg</file>
+        <file>theme/tokens.json</file>
+        <file>fonts/StackSansNotch-VariableFont_wght.ttf</file>
+        <file>icons/videomaker-256.png</file>
+    </qresource>
+    <qresource prefix="pics">
+        <file alias="videomaker.png">icons/videomaker-256.png</file>
+    </qresource>
+</RCC>

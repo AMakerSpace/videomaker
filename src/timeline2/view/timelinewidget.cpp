@@ -39,6 +39,8 @@
 #include <QSortFilterProxyModel>
 #include <QUuid>
 
+#include "videomaker/simplemode.h"
+
 const int TimelineWidget::comboScale[] = {1, 2, 4, 8, 15, 30, 50, 75, 100, 150, 200, 300, 500, 800, 1000, 1500, 2000, 3000, 6000, 15000, 30000};
 
 TimelineWidget::TimelineWidget(const QUuid uuid, QWidget *parent)
@@ -60,6 +62,8 @@ TimelineWidget::TimelineWidget(const QUuid uuid, QWidget *parent)
     m_favEffects = new QMenu(i18n("Insert an effect..."), this);
     m_favCompositions = new QMenu(i18n("Insert a composition..."), this);
     installEventFilter(this);
+    // VideoMaker: QML reads vmMode.simple (Einfach-Modus ohne Spurköpfe)
+    rootContext()->setContextProperty(QStringLiteral("vmMode"), SimpleMode::instance());
     connect(&timelineController, &TimelineController::zoneMoved, this, &TimelineWidget::zoneMoved);
     connect(&timelineController, &TimelineController::ungrabHack, this, &TimelineWidget::slotUngrabHack);
     connect(&timelineController, &TimelineController::regainFocus, this, &TimelineWidget::regainFocus, Qt::DirectConnection);

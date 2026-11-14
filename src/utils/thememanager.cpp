@@ -56,7 +56,8 @@ QString ThemeManager::loadScheme(const QString &schemeName)
 
 void ThemeManager::switchDarkPalette(bool dark)
 {
-    const QString schemeFileName = dark ? QStringLiteral("BreezeDark.colors") : QString();
+    // VideoMaker: zwischen den AMaker-Schemata wechseln
+    const QString schemeFileName = dark ? QStringLiteral("AMakerDark.colors") : QStringLiteral("AMakerLight.colors");
     for (int i = 0; i < model()->rowCount(); ++i) {
         QModelIndex index = model()->index(i, 0);
         if ((schemeFileName.isEmpty() && index.data(KColorSchemeModel::PathRole).toString().isEmpty()) ||

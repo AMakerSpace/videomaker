@@ -33,6 +33,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "jobs/stabilizetask.h"
 #include "jobs/transcodetask.h"
 #include "kddocksetup.h"
+#include "videomaker/simplemode.h"
 #include "kdenlivesettings.h"
 #include "keysequencehandler.h"
 #include "layouts/layoutmanagement.h"
@@ -885,6 +886,8 @@ void MainWindow::finishUiSetup()
     pCore->restoreLayout();
     Q_EMIT pCore->closeSplash();
     setAutoSaveSettings();
+    // VideoMaker: iMovie-artiger Einfach-Modus (Kopfleiste, Werkzeuge, Film-Leiste) – nach dem Wiederherstellen der Leisten
+    SimpleMode::instance()->attach(this);
     QObject::disconnect(pCore.get(), &Core::GUISetupDone, this, nullptr);
     // This should connect only after splash is done
     connect(pCore.get(), &Core::loadingMessageNewStage, this, [&](const QString &message, int max = -1) {

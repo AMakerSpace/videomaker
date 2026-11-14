@@ -88,6 +88,7 @@ class /*KDENLIVECORE_EXPORT*/ MainWindow : public KXmlGuiWindow
 public:
     friend class RenderWidget;
     friend class Monitor;
+    friend class SimpleMode; // VideoMaker
     friend class KdenliveSettingsDialog;
 
     explicit MainWindow(QWidget *parent = nullptr);

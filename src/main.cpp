@@ -12,6 +12,7 @@ SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 #include "definitions.h"
 #include "dialogs/wizard.h"
 #include "kdenlive_debug.h"
+#include "videomaker/amakertheme.h"
 #include "kdenlivesettings.h"
 // Required for MacOS definition of MLT_LC_NAME
 #include "lib/localeHandling.h"
@@ -261,9 +262,12 @@ int main(int argc, char *argv[])
     default:
         break;
     }
-    if (!packageName.isEmpty()) {
-        KConfig::setMainConfigName(QStringLiteral("kdenlive-%1rc").arg(packageName));
-    }
+    // VideoMaker: eigene Einstellungen, das normale Kdenlive bleibt unberührt
+    KConfig::setMainConfigName(packageName.isEmpty() ? QStringLiteral("videomakerrc") : QStringLiteral("videomaker-%1rc").arg(packageName));
+
+    // VideoMaker: Sprache (Deutsch/Englisch) vor dem ersten i18n(), dann Schrift, Hell/Dunkel und Stylesheet
+    AMakerTheme::setupLanguage();
+    AMakerTheme::setup();
 
     KLocalizedString::setApplicationDomain("kdenlive");
 
@@ -271,8 +275,10 @@ int main(int argc, char *argv[])
     QString otherText = i18n("Please report bugs to <a href=\"%1\">%2</a>", QStringLiteral("https://bugs.kde.org/enter_bug.cgi?product=kdenlive"),
                              QStringLiteral("https://bugs.kde.org/"));
 
-    KAboutData aboutData(QByteArray("kdenlive"), i18n("Kdenlive"), KDENLIVE_VERSION, i18n("An open source video editor."), KAboutLicense::GPL_V3,
-                         i18n("Copyright © 2007–2025 Kdenlive authors"), otherText, QStringLiteral("https://kdenlive.org"));
+    // VideoMaker: interner Name bleibt „kdenlive“ (Datenordner, Übersetzungen), sichtbar ist „VideoMaker“
+    KAboutData aboutData(QByteArray("kdenlive"), QStringLiteral("VideoMaker"), KDENLIVE_VERSION, i18n("Video editing as simple as it gets. Based on Kdenlive."),
+                         KAboutLicense::GPL_V3, i18n("Copyright © 2007–2025 Kdenlive authors, 2026 AMakerSpace"), otherText,
+                         QStringLiteral("https://github.com/AMakerSpace"));
     // main developers (alphabetical)
     aboutData.addAuthor(i18n("Jean-Baptiste Mardelle"), i18n("MLT and KDE SC 4 / KF5 port, main developer and maintainer"), QStringLiteral("jb@kdenlive.org"));
     // active developers with major involvement
@@ -302,12 +308,12 @@ int main(int argc, char *argv[])
     aboutData.addComponent(i18n("FFmpeg"), i18n("A complete, cross-platform solution to record, convert and stream audio and video."), QString(),
                            QStringLiteral("https://ffmpeg.org"));
 
-    aboutData.setDesktopFileName(QStringLiteral("org.kde.kdenlive"));
+    aboutData.setDesktopFileName(QStringLiteral("de.amakerspace.VideoMaker"));
 
     // Set application data
     KAboutData::setApplicationData(aboutData);
 #ifndef Q_OS_MACOS // skip this on macOS to have proper mime-type icon visible
-    app.setWindowIcon(QIcon(QStringLiteral(":/pics/kdenlive.png")));
+    app.setWindowIcon(QIcon(QStringLiteral(":/pics/videomaker.png")));
 #endif
 
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
@@ -482,10 +488,9 @@ int main(int argc, char *argv[])
 
     KSharedConfigPtr config = KSharedConfig::openConfig();
     KConfigGroup uicg(config, "UiSettings");
-    if (!uicg.exists()) {
-        uicg.writeEntry("ColorSchemePath", "BreezeDark.colors");
-        uicg.sync();
-    }
+    // VideoMaker: Farbschema kommt immer aus AMakerTheme (hell/dunkel/auto)
+    uicg.writeEntry("ColorSchemePath", AMakerTheme::schemeFile());
+    uicg.sync();
     if (QQuickWindow::graphicsApi() == QSGRendererInterface::Vulkan) {
         qWarning() << "::: Detected QML VULKAN backend, switching to OpenGL...";
         QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);

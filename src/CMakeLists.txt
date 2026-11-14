@@ -67,6 +67,7 @@ add_subdirectory(utils)
 add_subdirectory(widgets)
 add_subdirectory(xml)
 add_subdirectory(layouts)
+add_subdirectory(videomaker)
 
 ## toplevel source code files
 list(APPEND kdenlive_SRCS
@@ -187,7 +188,7 @@ ecm_target_qml_sources(kdenliveLib
     dialogs/Simplesplash.qml
 )
 
-qt_add_resources(kdenlive_extra_SRCS icons.qrc uiresources.qrc)
+qt_add_resources(kdenlive_extra_SRCS icons.qrc uiresources.qrc ../videomaker/videomaker.qrc)
 
 ## Icon for Windows and MacOS.
 ## The svg (or svgz) icon must be provided first to be used on MacOS

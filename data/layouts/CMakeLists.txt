@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: Jean-Baptiste Mardelle <jb@kdenlive.org>
 
 INSTALL (FILES
+    advanced.json
     audio.json
     color.json
     editing.json

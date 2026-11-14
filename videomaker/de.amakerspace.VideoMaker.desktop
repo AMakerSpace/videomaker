@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=VideoMaker
+GenericName=Videoschnitt
+Comment=Videos schneiden – so einfach wie iMovie
+Exec=videomaker %F
+Icon=de.amakerspace.VideoMaker
+Categories=AudioVideo;Video;AudioVideoEditing;
+Keywords=Video;Schnitt;Film;
+StartupWMClass=kdenlive

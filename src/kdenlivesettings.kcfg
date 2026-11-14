@@ -1008,7 +1008,7 @@
     </entry>
     <entry name="layoutsOrder" type="StringList">
       <label>Project layout order</label>
-      <default>logging,editing,audio,effects,color</default>
+      <default>editing,advanced,logging,audio,effects,color</default>
     </entry>
 
     <entry name="showdescriptioncolumn" type="Bool">

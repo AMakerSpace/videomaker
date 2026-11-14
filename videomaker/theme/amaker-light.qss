@@ -1,0 +1,100 @@
+/* AMaker light – erzeugt von amaker/qt/make_qss.py, nicht von Hand ändern */
+* { font-family: "Stack Sans Notch"; }
+QWidget { color: #000000; }
+QMainWindow, QDialog { background: #f4f4f4 url(":/videomaker/theme/dots-light.svg"); }
+QMainWindow::separator { background: #000000; width: 3px; height: 3px; }
+
+/* Leisten */
+QMenuBar { background: #ffffff; border-bottom: 3px solid #000000; font-weight: 700; padding: 2px; }
+QMenuBar::item { padding: 6px 12px; background: transparent; }
+QMenuBar::item:selected { background: #000000; color: #ffffff; }
+QToolBar { background: #ffffff; border: 0; border-bottom: 3px solid #000000; spacing: 4px; padding: 4px; }
+QToolBar::separator { background: #b3b3b3; width: 3px; margin: 4px 6px; }
+QStatusBar { background: #ffffff; border-top: 3px solid #000000; font-weight: 600; }
+QStatusBar::item { border: 0; }
+
+/* Menüs & Tooltips */
+QMenu { background: #ffffff; border: 3px solid #000000; border-right: 7px solid #000000; border-bottom: 7px solid #000000; padding: 2px; }
+QMenu::item { padding: 7px 26px 7px 24px; font-weight: 600; }
+QMenu::item:selected { background: #000000; color: #ffffff; }
+QMenu::item:disabled { color: #6b6b6b; }
+QMenu::separator { height: 2px; background: #000000; margin: 3px 0; }
+QToolTip { background: #000000; color: #ffffff; border: 3px solid #000000; padding: 5px 8px; font-weight: 600; }
+
+/* Knöpfe: dicke Kante rechts/unten = harter Schatten; überfahren = Verlaufsrand + 2px angehoben; Klick = eingerastet */
+QPushButton { background: #ffffff; color: #000000; font-weight: 700; padding: 6px 16px; min-height: 22px;
+  border: 3px solid #000000; border-right: 7px solid #000000; border-bottom: 7px solid #000000;
+  margin: 2px 0 0 2px; }
+QPushButton:hover { border-top-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); border-left-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); margin: 0 2px 2px 0; }
+QPushButton:pressed, QPushButton:checked { background: #000000; color: #ffffff; border-right-width: 3px; border-bottom-width: 3px;
+  border-right-color: #000000; border-bottom-color: #000000; margin: 6px 0 0 6px; }
+QPushButton:default { background: #000000; color: #ffffff; }
+QPushButton:disabled { background: #dedede; color: #6b6b6b; border-color: #b3b3b3; }
+QToolButton { background: transparent; border: 3px solid transparent; padding: 3px; }
+QToolButton:hover { background: #ffffff; color: #000000; border: 3px solid qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); }
+/* eingerastet: grau statt schwarz, sonst verschwinden die (schwarzen) Symbole */
+QToolButton:pressed, QToolButton:checked { background: #dedede; border: 3px solid #000000; }
+QToolButton::menu-indicator { image: none; }
+
+/* Felder */
+QLineEdit, QTextEdit, QPlainTextEdit, QAbstractSpinBox, QComboBox { background: #ffffff; color: #000000;
+  border: 3px solid #000000; padding: 4px 8px; selection-background-color: #000000; selection-color: #ffffff; }
+QLineEdit:focus, QAbstractSpinBox:focus, QComboBox:focus, QTextEdit:focus { border-right: 7px solid #000000; border-bottom: 7px solid #000000; }
+QComboBox::drop-down { border: 0; border-left: 3px solid #000000; width: 22px; background: #dedede; }
+QComboBox QAbstractItemView { background: #ffffff; border: 3px solid #000000; selection-background-color: #000000; selection-color: #ffffff; }
+QCheckBox, QRadioButton { spacing: 8px; font-weight: 600; }
+QCheckBox::indicator, QRadioButton::indicator { width: 14px; height: 14px; border: 3px solid #000000; background: #ffffff; }
+QCheckBox::indicator:checked, QRadioButton::indicator:checked { background: #000000; }
+
+/* Listen & Bäume */
+QAbstractItemView { background: #ffffff; alternate-background-color: #f4f4f4; border: 0;
+  selection-background-color: #000000; selection-color: #ffffff; outline: 0; }
+QAbstractItemView::item:selected { background: #000000; color: #ffffff; }
+QAbstractItemView::item:hover:!selected { background: #dedede; }
+QHeaderView::section { background: #dedede; color: #000000; border: 0; border-right: 2px solid #000000; border-bottom: 3px solid #000000;
+  padding: 5px 8px; font-weight: 700; }
+
+/* Reiter: Kopfzeile grau, aktiver Reiter schwarz */
+QTabWidget::pane { border: 3px solid #000000; background: #ffffff; }
+QTabBar { background: #dedede; font-weight: 700; }
+QTabBar::tab { background: #dedede; color: #000000; border: 0; border-right: 3px solid #000000; padding: 7px 14px; }
+QTabBar::tab:selected { background: #000000; color: #ffffff; }
+QTabBar::tab:hover:!selected { background: #ffffff; }
+
+/* Schieberegler, Rollbalken, Fortschritt */
+QSlider::groove:horizontal { height: 3px; background: #000000; }
+QSlider::handle:horizontal { width: 12px; margin: -7px 0; background: #ffffff; border: 3px solid #000000; }
+QSlider::handle:horizontal:hover { border-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); }
+QSlider::groove:vertical { width: 3px; background: #000000; }
+QSlider::handle:vertical { height: 12px; margin: 0 -7px; background: #ffffff; border: 3px solid #000000; }
+QScrollBar:vertical { background: #f4f4f4; width: 14px; border-left: 2px solid #000000; margin: 0; }
+QScrollBar:horizontal { background: #f4f4f4; height: 14px; border-top: 2px solid #000000; margin: 0; }
+QScrollBar::handle { background: #000000; min-height: 30px; min-width: 30px; margin: 2px; }
+QScrollBar::handle:hover { background: #6b6b6b; }
+QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+QProgressBar { background: #ffffff; border: 3px solid #000000; text-align: center; font-weight: 700; color: #000000; min-height: 14px; }
+QProgressBar::chunk { background: qlineargradient(spread:repeat, x1:0, y1:0, x2:0.03, y2:0.12, stop:0 #000000, stop:0.5 #000000, stop:0.51 #ffffff, stop:1 #ffffff); }
+
+/* Gruppen & Andockbereiche (Kdenlive nutzt KDDockWidgets) */
+QGroupBox { border: 3px solid #000000; margin-top: 14px; padding-top: 10px; font-weight: 700; background: #ffffff; }
+QGroupBox::title { subcontrol-origin: margin; left: 8px; padding: 2px 6px; background: #000000; color: #ffffff; }
+QDockWidget::title { background: #dedede; border-bottom: 3px solid #000000; padding: 6px; font-weight: 700; }
+KDDockWidgets--QtWidgets--TitleBar { background: #dedede; border-bottom: 3px solid #000000; font-weight: 700; }
+KDDockWidgets--QtWidgets--Group { border: 3px solid #000000; background: #ffffff; }
+KDDockWidgets--QtWidgets--TabBar { background: #dedede; border-bottom: 3px solid #000000; }
+KDDockWidgets--QtWidgets--Separator { background: #f4f4f4; }
+KDDockWidgets--QtWidgets--MainWindow, KDDockWidgets--QtWidgets--DropArea { background: #f4f4f4 url(":/videomaker/theme/dots-light.svg"); }
+
+/* VideoMaker-Leisten (src/videomaker/simplemode.cpp) – andere Apps dürfen die Namen mitbenutzen */
+QToolBar#videomakerTopBar { background: #ffffff; border: 0; border-bottom: 3px solid #000000; padding: 2px; }
+#vmAdjustBar, #vmFilmBar { background: #dedede; border-bottom: 3px solid #000000; }
+QLabel#vmNumber { background: #000000; color: #ffffff; font-weight: 700; padding: 3px 7px; }
+QLabel#vmBoxTitle { font-weight: 700; padding: 0 4px; }
+#vmSeparator { background: #b3b3b3; }
+QToolButton[vmButton="true"] { background: #ffffff; color: #000000; font-weight: 700; padding: 4px 10px;
+  border: 3px solid #000000; border-right: 7px solid #000000; border-bottom: 7px solid #000000; margin: 2px 0 0 2px; }
+QToolButton[vmButton="true"]:hover { border-top-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); border-left-color: qconicalgradient(cx:0.5, cy:0.5, angle:135, stop:0 #ff93a0, stop:0.33 #ffe5aa, stop:0.66 #9fddae, stop:1 #ff93a0); margin: 0 2px 2px 0; }
+QToolButton[vmButton="true"]:checked, QToolButton[vmButton="true"]:pressed { background: #000000; color: #ffffff;
+  border-right-width: 3px; border-bottom-width: 3px; border-right-color: #000000; border-bottom-color: #000000; margin: 6px 0 0 6px; }
+QToolButton[vmPrimary="true"] { background: #000000; color: #ffffff; }

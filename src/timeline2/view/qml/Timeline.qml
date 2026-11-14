@@ -471,7 +471,8 @@ function getTrackColor(audio, header) {
     property real fontUnit: fontMetrics.font.pointSize
     property int collapsedHeight: Math.max(28, baseUnit * 1.8)
     property int minHeaderWidth: 6 * collapsedHeight
-    property int headerWidth: Math.max(minHeaderWidth, timeline.headerWidth())
+    // VideoMaker: im Einfach-Modus keine Spurköpfe (wie iMovie)
+    property int headerWidth: vmMode.simple ? 0 : Math.max(minHeaderWidth, timeline.headerWidth())
     property bool autoTrackHeight: timeline.autotrackHeight
     property color selectedTrackColor: Qt.rgba(activePalette.highlight.r, activePalette.highlight.g, activePalette.highlight.b, 0.2)
     property color frameColor: Qt.rgba(activePalette.shadow.r, activePalette.shadow.g, activePalette.shadow.b, 0.5)
@@ -1028,6 +1029,7 @@ function getTrackColor(audio, header) {
         Column {
             id: headerContainer
             width: root.headerWidth
+            visible: !vmMode.simple
             z: 1
             Item {
                 // Padding between toolbar and track headers.
