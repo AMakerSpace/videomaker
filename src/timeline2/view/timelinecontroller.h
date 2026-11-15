@@ -179,6 +179,8 @@ public:
     Q_INVOKABLE void keepAudioTargets(bool keep);
     Q_INVOKABLE const QString audioTargetName(int tid) const;
     Q_INVOKABLE int videoTarget() const;
+    /** @brief VideoMaker: id of the main video track (lowest) or, with audio = true, of the audio track right below it */
+    Q_INVOKABLE int vmMainTrack(bool audio) const;
     Q_INVOKABLE int hasAudioTarget() const;
     Q_INVOKABLE int clipTargets() const;
     Q_INVOKABLE bool hasVideoTarget() const;

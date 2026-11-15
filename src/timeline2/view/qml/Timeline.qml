@@ -472,7 +472,20 @@ function getTrackColor(audio, header) {
     property int collapsedHeight: Math.max(28, baseUnit * 1.8)
     property int minHeaderWidth: 6 * collapsedHeight
     // VideoMaker: im Einfach-Modus keine Spurköpfe (wie iMovie)
-    property int headerWidth: vmMode.simple ? 0 : Math.max(minHeaderWidth, timeline.headerWidth())
+    // VideoMaker: Einfach-Modus wie iMovie – große Hauptspur, Tonwelle als Streifen darunter, alles andere schlank
+    property int vmMainVideo: (vmMode.simple && trackBaseRepeater.count >= 0) ? timeline.vmMainTrack(false) : -1
+    property int vmMainAudio: (vmMode.simple && trackBaseRepeater.count >= 0) ? timeline.vmMainTrack(true) : -1
+    function vmTrackHeight(trackId, audio, height) {
+        if (!vmMode.simple) {
+            return height
+        }
+        if (trackId === vmMainVideo) {
+            return Math.round(baseUnit * 5)
+        }
+        return Math.round(baseUnit * (trackId === vmMainAudio ? 1.6 : 1.8))
+    }
+    // 1 statt 0: Qt-Spalten überspringen Elemente ohne Breite, dann fehlte die Gesamthöhe der Spuren
+    property int headerWidth: vmMode.simple ? 1 : Math.max(minHeaderWidth, timeline.headerWidth())
     property bool autoTrackHeight: timeline.autotrackHeight
     property color selectedTrackColor: Qt.rgba(activePalette.highlight.r, activePalette.highlight.g, activePalette.highlight.b, 0.2)
     property color frameColor: Qt.rgba(activePalette.shadow.r, activePalette.shadow.g, activePalette.shadow.b, 0.5)
@@ -1029,7 +1042,10 @@ function getTrackColor(audio, header) {
         Column {
             id: headerContainer
             width: root.headerWidth
-            visible: !vmMode.simple
+            // VideoMaker: ausgeblendet statt unsichtbar – die Spurhöhen werden hier zusammengezählt
+            opacity: vmMode.simple ? 0 : 1
+            enabled: !vmMode.simple
+            clip: true
             z: 1
             Item {
                 // Padding between toolbar and track headers.
@@ -1138,7 +1154,7 @@ function getTrackColor(audio, header) {
                             width: root.headerWidth
                             current: item === timeline.activeTrack
                             trackId: item
-                            height: model.trackHeight
+                            height: root.vmTrackHeight(model.item, model.audio, model.trackHeight)
                             collapsed: height <= root.collapsedHeight
                             Component.onCompleted: {
                                 root.collapsedHeight = collapsedHeight
@@ -1592,7 +1608,7 @@ function getTrackColor(audio, header) {
                             id: playhead
                             height: Math.round(root.baseUnit * .8)
                             width: Math.round(root.baseUnit * 1.2)
-                            fillColor: activePalette.windowText
+                            fillColor: vmMode.simple ? "#ff93a0" : activePalette.windowText
                             visible: cursor.visible
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: ruler.zoneHeight - 1
@@ -1655,10 +1671,10 @@ function getTrackColor(audio, header) {
                             id: trackBaseRepeater
                             delegate: Rectangle {
                                 width: scrollView.width
-                                border.width: 1
+                                border.width: vmMode.simple ? 0 : 1
                                 border.color: root.frameColor
-                                height: model.trackHeight
-                                color: (model.item === timeline.activeTrack) ? Qt.tint(getTrackColor(model.audio, false), selectedTrackColor) : getTrackColor(model.audio, false)
+                                height: root.vmTrackHeight(model.item, model.audio, model.trackHeight)
+                                color: vmMode.simple ? activePalette.window : (model.item === timeline.activeTrack) ? Qt.tint(getTrackColor(model.audio, false), selectedTrackColor) : getTrackColor(model.audio, false)
                             }
                         }
                     }
@@ -2050,9 +2066,11 @@ function getTrackColor(audio, header) {
                         }
                         Rectangle {
                             id: cursor
+                            z: 100
                             visible: root.consumerPosition > -1
-                            color: root.textColor
-                            width: 1
+                            // VideoMaker: Abspielkopf in Logo-Rosa, 3px wie iMovie
+                            color: vmMode.simple ? "#ff93a0" : root.textColor
+                            width: vmMode.simple ? 3 : 1
                             opacity: 1
                             height: tracksContainerArea.height
                             x: Math.round(root.consumerPosition * root.timeScale)
@@ -2204,7 +2222,7 @@ function getTrackColor(audio, header) {
             trackModel: multitrack
             rootIndex: trackDelegateModel.modelIndex(index)
             width: tracksContainerArea.width
-            height: trackHeight
+            height: root.vmTrackHeight(item, audio, trackHeight)
             isAudio: audio
             isLocked: model.locked
             trackThumbsFormat: thumbsFormat

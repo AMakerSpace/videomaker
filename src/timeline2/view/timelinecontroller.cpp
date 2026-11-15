@@ -327,6 +327,16 @@ void TimelineController::setScaleFactor(double scale)
     Q_EMIT scaleFactorChanged();
 }
 
+int TimelineController::vmMainTrack(bool audio) const
+{
+    if (!audio) {
+        return m_model->getLowestVideoTrackIndex();
+    }
+    // getTracksIds() liefert die Tonspuren von oben nach unten; die oberste liegt direkt unter der Hauptspur
+    const QList<int> ids = m_model->getTracksIds(true);
+    return ids.isEmpty() ? -1 : ids.constFirst();
+}
+
 int TimelineController::duration() const
 {
     return m_duration;

@@ -91,6 +91,7 @@ QToolBar#videomakerTopBar { background: #ffffff; border: 0; border-bottom: 3px s
 #vmAdjustBar, #vmFilmBar { background: #dedede; border-bottom: 3px solid #000000; }
 QLabel#vmNumber { background: #000000; color: #ffffff; font-weight: 700; padding: 3px 7px; }
 QLabel#vmBoxTitle { font-weight: 700; padding: 0 4px; }
+QLabel#vmTimecode { font-weight: 700; font-size: 15px; }
 #vmSeparator { background: #b3b3b3; }
 #vmAdjustPanel { background: #ffffff; border: 0; border-bottom: 3px solid #000000; }
 #vmAdjustPanel QPushButton { padding: 2px 10px; min-height: 16px; }

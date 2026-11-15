@@ -553,7 +553,8 @@ Item {
                 color: rulerRoot.dimmedColor2
             }
             Label {
-                visible: parent.showText
+                // VideoMaker: im Einfach-Modus keine Zeitangaben am Lineal (Zeitcode steht in der Film-Leiste)
+                visible: parent.showText && !vmMode.simple
                 anchors.top: parent.top
                 text: timeline.timecode(parent.realPos + rulerRoot.timecodeOffset)
                 font: miniFont

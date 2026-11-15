@@ -1266,7 +1266,8 @@ Rectangle {
                     color: vmMode.simple ? '#FF000000' : clipRoot.selected ? (root.mainItemId == clipRoot.clipId ? '#FFCC0000' : '#FF800000') : '#66000000'
                     width: label.width + (2 * itemBorder.border.width)
                     height: label.height
-                    visible: clipRoot.width > root.baseUnit
+                    // VideoMaker: Tonteil ohne Namen – er wirkt wie die Tonwelle unter dem Clip
+                    visible: clipRoot.width > root.baseUnit && !(vmMode.simple && clipRoot.isAudio)
                     anchors.left: debugCidRect.visible ? debugCidRect.right : parent.left
                     anchors.leftMargin: clipRoot.timeremap ? labelRect.height : 0
                     Text {

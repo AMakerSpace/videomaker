@@ -60,6 +60,7 @@ private:
     void refreshIcons();
     void updateProjectName();
     void applyBinView(bool simple);
+    void updateTimecode();
 
     QPointer<MainWindow> m_window;
     QToolBar *m_topBar{nullptr};
@@ -69,6 +70,7 @@ private:
     QLabel *m_projectName{nullptr};
     QToolButton *m_advancedButton{nullptr};
     QSlider *m_zoom{nullptr};
+    QLabel *m_timecode{nullptr};
     QList<QToolButton *> m_iconButtons;
     bool m_simple{true};
 };

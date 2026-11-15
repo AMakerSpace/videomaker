@@ -11,6 +11,7 @@
 #include "kdenlivesettings.h"
 #include "mainwindow.h"
 #include "monitor/monitor.h"
+#include "monitor/monitorproxy.h"
 #include "timeline2/view/timelinetabs.hpp"
 #include "bin/bin.h"
 #include "timeline2/model/timelineitemmodel.hpp"
@@ -34,6 +35,7 @@
 #include <QStatusBar>
 #include <QSvgRenderer>
 #include <QToolBar>
+#include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -146,6 +148,46 @@ void SimpleMode::attach(MainWindow *window)
     AMakerTheme::watchSystem([](bool dark) { Q_EMIT pCore->switchDarkPalette(dark); });
     updateProjectName();
     setSimple(m_simple);
+
+    // Testhilfe: VIDEOMAKER_SCREENSHOT=<datei.png>[:sekunden] speichert ein Bild des Fensters (auch unter Wayland)
+    const QString shot = qEnvironmentVariable("VIDEOMAKER_SCREENSHOT");
+    if (!shot.isEmpty()) {
+        const int colon = shot.lastIndexOf(QLatin1Char(':'));
+        const int seconds = colon > 0 ? shot.mid(colon + 1).toInt() : 15;
+        const QString file = colon > 0 ? shot.left(colon) : shot;
+        // VIDEOMAKER_TEST_WIDTH=<px>: Fenster vorher auf diese Breite stellen (schmale Fenster prüfen)
+        const int width = qEnvironmentVariableIntValue("VIDEOMAKER_TEST_WIDTH");
+        if (width > 0) {
+            QTimer::singleShot((seconds - 4) * 1000, window, [window, width]() {
+                window->showNormal();
+                window->resize(width, window->height());
+            });
+        }
+        // VIDEOMAKER_TEST_CLICK=TEXT1,TEXT2: Knöpfe der Kopfleiste nacheinander anklicken, offene Fenster melden
+        const QStringList clicks = qEnvironmentVariable("VIDEOMAKER_TEST_CLICK").split(QLatin1Char(','), Qt::SkipEmptyParts);
+        for (int i = 0; i < clicks.size(); ++i) {
+            QTimer::singleShot((seconds - 3 - clicks.size() + i) * 1000, window, [this, text = clicks.at(i)]() {
+                const auto buttons = m_topBar->findChildren<QToolButton *>();
+                for (QToolButton *b : buttons) {
+                    if (KLocalizedString::removeAcceleratorMarker(b->text()) == text) {
+                        // Dialoge würden blockieren: Klick über die Ereignisschleife auslösen
+                        QMetaObject::invokeMethod(b, &QToolButton::click, Qt::QueuedConnection);
+                        qInfo() << "VideoMaker-Test: geklickt" << text;
+                    }
+                }
+            });
+        }
+        QTimer::singleShot(seconds * 1000, window, [window, file]() {
+            window->grab().save(file);
+            QStringList open;
+            for (QWidget *w : QApplication::topLevelWidgets()) {
+                if (w->isVisible()) {
+                    open << QString::fromLatin1(w->metaObject()->className()) + QLatin1Char(':') + w->windowTitle();
+                }
+            }
+            qInfo() << "VideoMaker-Test: offene Fenster" << open;
+        });
+    }
 }
 
 void SimpleMode::setSimple(bool simple)
@@ -359,6 +401,12 @@ QWidget *SimpleMode::buildFilmBar()
         lay->addWidget(b);
     }
     lay->addStretch(1);
+    // Wie iMovie: Position / Länge mittig
+    m_timecode = new QLabel(bar);
+    m_timecode->setObjectName(QStringLiteral("vmTimecode"));
+    lay->addWidget(m_timecode);
+    lay->addStretch(1);
+    connect(m_window->m_projectMonitor->getControllerProxy(), &MonitorProxy::positionChanged, this, &SimpleMode::updateTimecode);
     auto *zoomLabel = new QLabel(caps(i18n("Zoom")), bar);
     zoomLabel->setObjectName(QStringLiteral("vmBoxTitle"));
     lay->addWidget(zoomLabel);
@@ -391,6 +439,7 @@ void SimpleMode::appendToFilm(const QString &binId)
         // Abspielkopf ans neue Ende, ganzen Film einpassen (wie iMovie)
         ctl->setPosition(pos);
         m_window->slotFitZoom();
+        updateTimecode();
     }
 }
 
@@ -459,6 +508,27 @@ void SimpleMode::refreshIcons()
     for (QToolButton *b : std::as_const(m_iconButtons)) {
         b->setIcon(vmIcon(b->property("vmIcon").toString()));
     }
+}
+
+void SimpleMode::updateTimecode()
+{
+    TimelineWidget *timeline = m_window ? m_window->getCurrentTimeline() : nullptr;
+    if (!m_timecode || !timeline) {
+        return;
+    }
+    TimelineController *ctl = timeline->controller();
+    static QPointer<TimelineController> connected;
+    if (connected != ctl) {
+        connected = ctl;
+        connect(ctl, &TimelineController::durationChanged, this, &SimpleMode::updateTimecode, Qt::UniqueConnection);
+    }
+    const double fps = qMax(1., pCore->getCurrentFps());
+    auto clock = [fps](int frames) {
+        const int s = int(frames / fps);
+        return QStringLiteral("%1:%2").arg(s / 60, 2, 10, QLatin1Char('0')).arg(s % 60, 2, 10, QLatin1Char('0'));
+    };
+    const int pos = m_window->m_projectMonitor->getControllerProxy()->getPosition();
+    m_timecode->setText(QStringLiteral("%1  /  %2").arg(clock(pos), clock(ctl->duration())));
 }
 
 void SimpleMode::updateProjectName()
